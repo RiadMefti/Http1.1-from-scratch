@@ -1,11 +1,16 @@
 {
-  "name": "@http-server",
-  "description": "Build  HTTP server from scratch",
+  "name": "@http/server",
+  "description": "Build HTTP server from scratch",
   "type": "module",
   "scripts": {
-    "dev": "bun run app/main.ts"
+    "dev": "bun run app/main.ts",
+    "test": "mocha --loader=ts-node/esm 'test/**/*.ts'"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/mocha": "^10.0.9",
+    "mocha": "^10.8.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
   }
 }

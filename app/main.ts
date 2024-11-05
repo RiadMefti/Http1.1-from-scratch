@@ -40,7 +40,10 @@ function response404(): string {
 
 function HttpBufferToHttpRequest(buffer: Buffer): HttpRequest {
   let bufferString = buffer.toString();
-  let bufferStringArray = bufferString.split(" ");
+  let bufferStringArrayWithSpace = bufferString.split(" ");
+  let bufferStringArray = bufferStringArrayWithSpace.filter(
+    (str) => str.length > 0
+  );
 
   let req: HttpRequest = {
     method: bufferStringArray[0],
@@ -94,7 +97,7 @@ function echoHandler(route: string): string {
   let substringToRemove = "GET /echo/";
 
   let query = route.replace(substringToRemove, "");
-  if (query.includes("/")) return response404();
+  if (query.includes("/")) return response404() + "\r\n\r\n";
   const resObj = CreateHttpReponse(
     response200(),
     "text/plain",
@@ -105,7 +108,7 @@ function echoHandler(route: string): string {
   return HttpResponseObjToString(resObj);
 }
 
-function NewRouter(buffer: Buffer): string {
+export function NewRouter(buffer: Buffer): string {
   const req = HttpBufferToHttpRequest(buffer);
   return Router(`${req.method} ${req.target}`);
 }
