@@ -1,0 +1,11 @@
+{
+  "name": "@http-server",
+  "description": "Build  HTTP server from scratch",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run app/main.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
