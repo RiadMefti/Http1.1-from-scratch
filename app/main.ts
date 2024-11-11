@@ -21,6 +21,7 @@ console.log("Logs from your program will appear here!");
 const server = net.createServer((socket) => {
   socket.on("data", (buffer: Buffer) => {
     socket.write(NewRouter(buffer));
+    socket.end();
   });
 
   socket.on("close", () => {
@@ -40,6 +41,7 @@ function response404(): string {
 
 function HttpBufferToHttpRequest(buffer: Buffer): HttpRequest {
   let bufferString = buffer.toString();
+  console.log(bufferString);
   let bufferStringArrayWithSpace = bufferString.split(" ");
   let bufferStringArray = bufferStringArrayWithSpace.filter(
     (str) => str.length > 0
