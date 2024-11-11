@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer';
-import { HTTPHeaders, HTTPRequest } from './HeaderTypes';
+import { HTTPHeaders, HTTPRequest } from './RequestTypes';
 
 const parseRequest = (data: Buffer): HTTPRequest => {
     // Convert Buffer to string
