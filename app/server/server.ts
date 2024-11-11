@@ -1,5 +1,5 @@
 import { Server, Socket, createServer } from "net";
-
+import { parseRequest } from "@/request-handler/RequestHandler";
 interface ServerConfig {
   port?: number;
   host?: string;
@@ -31,13 +31,8 @@ export class TCPServer {
   private handleConnection(socket: Socket): void {
     socket.on("data", (buffer: Buffer) => {
       try {
-        // Attempt to convert buffer to string
-        const data = buffer.toString("utf-8");
-
-        // Validate the data is valid UTF-8
-        if (Buffer.from(data).toString("utf-8") !== data) {
-          throw new Error("Invalid UTF-8 data");
-        }
+        const header = parseRequest(buffer);
+        console.log(header);
 
         socket.end();
       } catch (error) {
