@@ -31,23 +31,29 @@ export class TCPServer {
   private handleConnection(socket: Socket): void {
     socket.on("data", (buffer: Buffer) => {
       try {
-        console.log(buffer.toString());
+        // Attempt to convert buffer to string
+        const data = buffer.toString("utf-8");
+
+        // Validate the data is valid UTF-8
+        if (Buffer.from(data).toString("utf-8") !== data) {
+          throw new Error("Invalid UTF-8 data");
+        }
 
         socket.end();
       } catch (error) {
-        //TODO
-        socket.end();
+        // Handle invalid data by destroying the socket with an error
+        socket.destroy(new Error("Invalid data received"));
       }
     });
 
     socket.on("close", () => {
-      //TODO
-      socket.end();
+      // Clean up any resources if needed
     });
 
     socket.on("error", (error) => {
-      //TODO
-      socket.end();
+      // Log the error and destroy the socket
+      console.error("Socket error:", error);
+      socket.destroy(error);
     });
   }
 
