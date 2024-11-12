@@ -1,5 +1,7 @@
-import { Server, Socket, createServer } from "net";
 import { parseRequest } from "@/request-handler/RequestHandler";
+import { Router } from "@/route/router";
+import { createServer, Server, Socket } from "net";
+
 interface ServerConfig {
   port?: number;
   host?: string;
@@ -9,6 +11,7 @@ export class TCPServer {
   private static instance: TCPServer;
   private server: Server;
   private config: ServerConfig;
+  private router: Router;
 
   private constructor(config: ServerConfig = {}) {
     this.config = {
@@ -16,6 +19,7 @@ export class TCPServer {
       host: config.host || "localhost",
     };
 
+    this.router = new Router();
     this.server = createServer((socket: Socket) => {
       this.handleConnection(socket);
     });
@@ -28,21 +32,29 @@ export class TCPServer {
     return TCPServer.instance;
   }
 
-  private handleConnection(socket: Socket): void {
-    socket.on("data", (buffer: Buffer) => {
-      try {
-        const header = parseRequest(buffer);
-        console.log(header);
+  // Get router instance for registering routes
+  public getRouter(): Router {
+    return this.router;
+  }
 
-        socket.end();
+  private handleConnection(socket: Socket): void {
+    socket.on("data", async (buffer: Buffer) => {
+      try {
+        const request = parseRequest(buffer);
+        await this.router.handleRequest(request, socket);
       } catch (error) {
-        // Handle invalid data by destroying the socket with an error
-        socket.destroy(new Error("Invalid data received"));
+        console.error("Request handling error:", error);
+        socket.destroy(new Error("Invalid request"));
       }
     });
 
+    socket.on("error", (error) => {
+      console.error("Socket error:", error);
+      socket.destroy(error);
+    });
+
     socket.on("close", () => {
-      // Clean up any resources if needed
+
     });
 
     socket.on("error", (error) => {

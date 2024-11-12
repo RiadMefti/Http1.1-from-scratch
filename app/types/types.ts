@@ -1,4 +1,3 @@
-
 export interface HTTPRequest {
   method: string;
   url: string;
@@ -7,4 +6,6 @@ export interface HTTPRequest {
   body: string;
 }
 
-export type HTTPHeaders = { [key: string]: string };
+export interface HTTPHeaders {
+  [key: string]: string;
+}
